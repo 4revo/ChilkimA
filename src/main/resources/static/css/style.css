@@ -1,0 +1,540 @@
+/* 定义全局CSS变量 */
+:root {
+    --primary-color: #00BFA5;    /* 主题色（绿色） */
+    --bg-dark: #1E1E1E;         /* 深色背景 */
+    --bg-darker: #171717;       /* 更深的背景色 */
+    --text-color: #FFFFFF;      /* 文字颜色（白色） */
+    --border-color: #333333;    /* 边框颜色 */
+    --transition-speed: 0.3s;   /* 过渡动画时长 */
+}
+
+/* 设置页面基本样式 */
+body {
+    background-color: var(--bg-dark);    /* 使用深色背景 */
+    color: var(--text-color);            /* 文字颜色为白色 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;  /* 设置字体 */
+    margin: 0;
+    padding: 0;
+}
+
+/* 左侧边栏样式 */
+.sidebar {
+    background-color: var(--bg-darker);   /* 侧边栏背景色 */
+    height: 100vh;                        /* 占满整个视口高度 */
+    position: fixed;                      /* 固定定位 */
+    left: 0;                             /* 靠左对齐 */
+    top: 0;                              /* 靠顶对齐 */
+    width: 250px;                        /* 宽度250像素 */
+    padding: 20px;                       /* 内边距 */
+    border-right: 1px solid var(--border-color);  /* 右侧边框 */
+    z-index: 1000;                       /* 层级 */
+    display: flex;                       /* 弹性布局 */
+    flex-direction: column;              /* 纵向排列 */
+}
+
+/* 主内容区样式 */
+.main-content {
+    margin-left: 250px;                  /* 左边留出侧边栏的宽度 */
+    padding: 20px;                       /* 内边距 */
+    min-height: 100vh;                   /* 最小高度占满视口 */
+    display: flex;                       /* 弹性布局 */
+    align-items: center;                 /* 垂直居中 */
+    justify-content: center;             /* 水平居中 */
+    flex-direction: column;              /* 纵向排列 */
+    position: relative;                  /* 相对定位，作为右侧导航栏的定位参考 */
+}
+
+/* 标题样式 */
+.logo {
+    color: var(--text-color);            /* 文字颜色 */
+    font-size: 29px;                     /* 字体大小 */
+    font-weight: bold;                   /* 加粗 */
+    margin: 30px 0 20px 0;               /* 外边距 */
+    position: relative;                   /* 相对定位 */
+    overflow: hidden;                     /* 隐藏溢出部分 */
+    text-align: center;                   /* 文字居中 */
+    width: 100%;                         /* 宽度100% */
+    padding: 0 20px;                     /* 左右内边距 */
+}
+
+/* 标题下划线动画效果 */
+.logo::after {
+    content: '';                         /* 添加内容 */
+    position: absolute;                  /* 绝对定位 */
+    left: 0;                            /* 靠左对齐 */
+    bottom: -2px;                       /* 底部偏移 */
+    width: 100%;                        /* 宽度100% */
+    height: 2px;                        /* 高度2像素 */
+    background-color: var(--primary-color);  /* 使用主题色 */
+    transform: translateX(-100%);        /* 初始位置在左侧 */
+    transition: transform var(--transition-speed);  /* 添加过渡动画 */
+}
+
+/* 标题悬停时下划线动画 */
+.logo:hover::after {
+    transform: translateX(0);            /* 下划线滑入 */
+}
+
+/* 导航按钮基本样式 */
+.nav-item {
+    padding: 15px;                       /* 内边距 */
+    margin: 10px 0;                      /* 上下外边距 */
+    cursor: pointer;                     /* 鼠标指针样式 */
+    display: flex;                       /* 弹性布局 */
+    align-items: center;                 /* 垂直居中 */
+    color: var(--text-color);            /* 文字颜色 */
+    text-decoration: none;               /* 无下划线 */
+    transition: all var(--transition-speed) ease;  /* 过渡动画 */
+    position: relative;                   /* 相对定位 */
+    overflow: hidden;                     /* 隐藏溢出 */
+    border-radius: 8px;                  /* 圆角 */
+    background-color: transparent;        /* 透明背景 */
+}
+
+/* 导航按钮滑动背景效果 */
+.nav-item::after {
+    content: '';                         /* 添加内容 */
+    position: absolute;                  /* 绝对定位 */
+    left: 0;                            /* 靠左对齐 */
+    top: 0;                             /* 靠顶对齐 */
+    width: 100%;                        /* 宽度100% */
+    height: 100%;                       /* 高度100% */
+    background-color: var(--primary-color);  /* 使用主题色 */
+    transform: translateX(-101%);        /* 初始位置在左侧 */
+    transition: transform 0.3s ease;     /* 过渡动画 */
+    z-index: 1;                         /* 层级 */
+    border-radius: 8px;                 /* 圆角 */
+}
+
+/* 导航按钮悬停效果 */
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);  /* 半透明白色背景 */
+    transform: translateX(10px);         /* 向右移动10像素 */
+}
+
+/* 导航按钮激活状态 */
+.nav-item.active {
+    color: var(--text-color);            /* 文字颜色 */
+    transform: scale(1);                 /* 保持原始大小 */
+}
+
+/* 激活状态背景动画 */
+.nav-item.active::after {
+    transform: translateX(0);            /* 背景滑入 */
+}
+
+/* 导航按钮图标样式 */
+.nav-item i {
+    margin-right: 10px;                  /* 右边距 */
+    font-size: 20px;                     /* 图标大小 */
+    transition: transform var(--transition-speed);  /* 过渡动画 */
+    position: relative;                   /* 相对定位 */
+    z-index: 2;                          /* 层级 */
+}
+
+/* 导航按钮图标悬停效果 */
+.nav-item:hover i {
+    transform: scale(1.2);               /* 放大1.2倍 */
+}
+
+/* 导航按钮文字样式 */
+.nav-item span {
+    position: relative;                   /* 相对定位 */
+    z-index: 2;                          /* 层级 */
+}
+
+/* 波纹动画关键帧 */
+@keyframes ripple {
+    0% {
+        transform: scale(1);              /* 初始大小 */
+        opacity: 0.4;                     /* 初始透明度 */
+    }
+    100% {
+        transform: scale(2);              /* 最终大小 */
+        opacity: 0;                       /* 最终透明度 */
+    }
+}
+
+/* 中心内容区样式 */
+.center-content {
+    text-align: center;                   /* 文字居中 */
+    max-width: 400px;                    /* 最大宽度 */
+    width: 100%;                         /* 宽度100% */
+    display: flex;                       /* 弹性布局 */
+    flex-direction: column;              /* 纵向排列 */
+    align-items: center;                 /* 水平居中 */
+    justify-content: center;             /* 垂直居中 */
+}
+
+/* 设备图标容器样式 */
+.device-icon {
+    width: 100px;                        /* 宽度 */
+    height: 100px;                       /* 高度 */
+    background-color: var(--primary-color);  /* 背景色 */
+    border-radius: 50%;                  /* 圆形 */
+    margin: 0 auto 20px;                 /* 外边距 */
+    display: flex;                       /* 弹性布局 */
+    align-items: center;                 /* 垂直居中 */
+    justify-content: center;             /* 水平居中 */
+    font-size: 40px;                     /* 图标大小 */
+    transition: transform var(--transition-speed);  /* 过渡动画 */
+    position: relative;                   /* 相对定位 */
+}
+
+/* 设备图标样式 */
+.device-icon i {
+    position: absolute;                   /* 绝对定位 */
+    top: 50%;                            /* 垂直居中 */
+    left: 50%;                           /* 水平居中 */
+    transform: translate(-50%, -50%);     /* 居中偏移 */
+    color: white;                        /* 图标颜色 */
+    font-size: 40px;                     /* 图标大小 */
+    width: auto;                         /* 自动宽度 */
+    height: auto;                        /* 自动高度 */
+    margin: 0;                           /* 无外边距 */
+    display: block;                      /* 块级显示 */
+}
+
+/* 设备图标悬停效果 */
+.device-icon:hover {
+    transform: scale(1.1);               /* 放大1.1倍 */
+}
+
+/* 设备名称样式 */
+.device-name {
+    font-size: 24px;                     /* 字体大小 */
+    margin-bottom: 10px;                 /* 下边距 */
+}
+
+/* 设备ID样式 */
+.device-id {
+    color: #888;                         /* 文字颜色 */
+    margin-bottom: 30px;                 /* 下边距 */
+}
+
+/* 操作按钮样式 */
+.action-button {
+    background-color: var(--primary-color);  /* 背景色 */
+    color: white;                        /* 文字颜色 */
+    border: none;                        /* 无边框 */
+    padding: 12px 30px;                  /* 内边距 */
+    border-radius: 25px;                 /* 圆角 */
+    font-size: 16px;                     /* 字体大小 */
+    cursor: pointer;                     /* 鼠标指针 */
+    transition: all var(--transition-speed);  /* 过渡动画 */
+    position: relative;                   /* 相对定位 */
+    overflow: hidden;                     /* 隐藏溢出 */
+}
+
+/* 操作按钮悬停效��� */
+.action-button:hover {
+    background-color: #00A896;           /* 深色背景 */
+    transform: translateY(-2px);          /* 上移2像素 */
+    box-shadow: 0 5px 15px rgba(0, 191, 165, 0.3);  /* 阴影效果 */
+}
+
+/* 操作按钮点击效果 */
+.action-button:active {
+    transform: translateY(0);             /* 恢复位置 */
+}
+
+/* 图标通用样式 */
+.fas {
+    width: 24px;                         /* 宽度 */
+    height: 24px;                        /* 高度 */
+    margin-right: 10px;                  /* 右边距 */
+    display: inline-flex;                /* 内联弹性布局 */
+    align-items: center;                 /* 垂直居中 */
+    justify-content: center;             /* 水平居中 */
+}
+
+/* 页面切换动画 */
+.page-content {
+    display: none;                       /* 默认隐藏 */
+    opacity: 0;                          /* 透明 */
+    transition: opacity var(--transition-speed);  /* 过渡动画 */
+}
+
+/* 页面激活状态 */
+.page-content.active {
+    display: flex;                       /* 显示为弹性布局 */
+    opacity: 1;                          /* 不透明 */
+}
+
+/* 用户卡片样式 */
+.user-card {
+    background-color: rgba(255, 255, 255, 0.05);  /* 半透明背景 */
+    border-radius: 10px;                 /* 圆角 */
+    padding: 15px;                       /* 内边距 */
+    display: flex;                       /* 弹性布局 */
+    align-items: center;                 /* 垂直居中 */
+    margin-bottom: 20px;                 /* 下边距 */
+    cursor: pointer;                     /* 鼠标指针 */
+    transition: all var(--transition-speed);  /* 过渡动画 */
+}
+
+/* 用户卡片悬停效果 */
+.user-card:hover {
+    background-color: rgba(255, 255, 255, 0.1);  /* 加深背景 */
+    transform: translateY(-2px);          /* 上移2像素 */
+}
+
+/* 用户头像样式 */
+.user-avatar {
+    width: 40px;                         /* 宽度 */
+    height: 40px;                        /* 高度 */
+    background-color: var(--primary-color);  /* 背景色 */
+    border-radius: 50%;                  /* 圆形 */
+    display: flex;                       /* 弹性布局 */
+    align-items: center;                 /* 垂直居中 */
+    justify-content: center;             /* 水平居中 */
+    margin-right: 15px;                  /* 右边距 */
+    position: relative;                  /* 相对定位 */
+    overflow: hidden;                    /* 隐藏溢出 */
+}
+
+.user-avatar i {
+    font-size: 20px;                    /* 图标大小 */
+    color: white;                       /* 图标颜色 */
+    position: absolute;                 /* 绝对定位 */
+    top: 50%;                          /* 顶部50% */
+    left: 50%;                         /* 左侧50% */
+    transform: translate(-50%, -50%);   /* 向左上偏移自身50%实现完全居中 */
+}
+
+/* 用户信息样式 */
+.user-info {
+    flex: 1;                             /* 占满剩余空间 */
+}
+
+/* 用户名样式 */
+.user-name {
+    font-weight: bold;                   /* 加粗 */
+    margin-bottom: 5px;                  /* 下边距 */
+}
+
+/* 用户状态样式 */
+.user-status {
+    font-size: 12px;                     /* 字体大小 */
+    color: #888;                         /* 文字颜色 */
+}
+
+/* 用户信息弹窗样式 */
+.user-modal {
+    display: none;                       /* 默认隐藏 */
+    position: fixed;                     /* 固定定位 */
+    top: 0;                             /* 靠顶对齐 */
+    left: 0;                            /* 靠左对齐 */
+    width: 100%;                        /* 宽度100% */
+    height: 100%;                       /* 高度100% */
+    background-color: rgba(0, 0, 0, 0.5);  /* 半透明背景 */
+    z-index: 1001;                      /* 层级 */
+    opacity: 0;                         /* 透明 */
+    transition: opacity var(--transition-speed);  /* 过渡动画 */
+}
+
+/* 用户信息弹窗激活状态 */
+.user-modal.active {
+    display: flex;                      /* 显示为弹性布局 */
+    opacity: 1;                         /* 不透明 */
+    align-items: center;                /* ��直居中 */
+    justify-content: center;            /* 水平居中 */
+}
+
+/* 用户信息弹窗内容样式 */
+.user-modal-content {
+    background-color: var(--bg-darker);  /* 背景色 */
+    border-radius: 15px;                /* 圆角 */
+    width: 90%;                         /* 宽度90% */
+    max-width: 400px;                   /* 最大宽度 */
+    padding: 20px;                      /* 内边距 */
+    position: relative;                 /* 相对定位 */
+    transform: translateY(20px);        /* 初始位置向下偏移 */
+    transition: transform var(--transition-speed);  /* 过渡动画 */
+}
+
+/* 用户信息弹窗激活时内容样式 */
+.user-modal.active .user-modal-content {
+    transform: translateY(0);           /* 恢复位置 */
+}
+
+/* 用户信息弹窗头部样式 */
+.user-modal-header {
+    display: flex;                     /* 弹性布局 */
+    justify-content: space-between;    /* 两端对齐 */
+    align-items: center;               /* 垂直居中 */
+    margin-bottom: 20px;               /* 下边距 */
+}
+
+/* 用户信息弹窗标题样式 */
+.user-modal-header h3 {
+    margin: 0;                         /* 无外边距 */
+    color: var(--text-color);          /* 文字颜色 */
+}
+
+/* 关闭按钮样式 */
+.close-button {
+    background: none;                  /* 无背景 */
+    border: none;                      /* 无边框 */
+    color: var(--text-color);          /* 文字颜色 */
+    cursor: pointer;                   /* 鼠标指针 */
+    font-size: 20px;                   /* 字体大小 */
+    padding: 5px;                      /* 内边距 */
+    transition: transform var(--transition-speed);  /* 过渡动画 */
+}
+
+/* 关闭按钮悬停效果 */
+.close-button:hover {
+    transform: rotate(90deg);          /* 旋转90度 */
+}
+
+/* 用户信息弹窗头像样式 */
+.user-modal-avatar {
+    width: 100px;                      /* 宽度 */
+    height: 100px;                     /* 高度 */
+    background-color: var(--primary-color);  /* 背景色 */
+    border-radius: 50%;                /* 圆形 */
+    margin: 0 auto 20px;               /* 外边距 */
+    display: flex;                     /* 弹性布局 */
+    align-items: center;               /* 垂直居中 */
+    justify-content: center;           /* 水平居中 */
+    position: relative;                /* 相对定位 */
+    cursor: pointer;                   /* 鼠标指针 */
+    overflow: hidden;                  /* 隐藏溢出 */
+}
+
+.user-modal-avatar i {
+    font-size: 40px;                  /* 图标大小 */
+    color: white;                     /* 图标颜色 */
+    position: absolute;               /* 绝对定位 */
+    top: 50%;                        /* 顶部50% */
+    left: 50%;                       /* 左侧50% */
+    transform: translate(-50%, -50%); /* 向左上偏移自身50%实现完全居中 */
+}
+
+/* 头像覆盖层样式 */
+.avatar-overlay {
+    position: absolute;                /* 绝对定位 */
+    top: 0;                           /* 靠顶对齐 */
+    left: 0;                          /* 靠左对齐 */
+    width: 100%;                      /* 宽度100% */
+    height: 100%;                     /* 高度100% */
+    background-color: rgba(0, 0, 0, 0.5);  /* 半透明背景 */
+    display: flex;                    /* 弹性布局 */
+    align-items: center;              /* 垂直居中 */
+    justify-content: center;          /* 水平居中 */
+    opacity: 0;                       /* 透明 */
+    transition: opacity var(--transition-speed);  /* 过渡动画 */
+}
+
+/* 头像覆盖层悬停效果 */
+.user-modal-avatar:hover .avatar-overlay {
+    opacity: 1;                       /* 不透明 */
+}
+
+/* 用户信息项样式 */
+.info-item {
+    margin-bottom: 15px;              /* 下边距 */
+    display: flex;                    /* 弹性布局 */
+    align-items: center;              /* 垂直居中 */
+    justify-content: space-between;   /* 两端对齐 */
+}
+
+/* 标签样式 */
+.label {
+    color: #888;                      /* 文字颜色 */
+    font-size: 14px;                  /* 字体大小 */
+}
+
+/* 值样式 */
+.value {
+    color: var(--text-color);         /* 文字颜色 */
+    font-size: 14px;                  /* 字体大小 */
+}
+
+/* 可编辑值样式 */
+.editable-value {
+    display: flex;                    /* 弹性布局 */
+    align-items: center;              /* 垂直居中 */
+    gap: 10px;                        /* 间隔 */
+}
+
+/* 编辑按钮样式 */
+.edit-btn {
+    background: none;                 /* 无背景 */
+    border: none;                     /* 无边框 */
+    color: var(--text-color);         /* 文字颜色 */
+    cursor: pointer;                  /* 鼠标指针 */
+    opacity: 0.5;                     /* 半透明 */
+    transition: opacity var(--transition-speed);  /* 过渡动画 */
+    padding: 0;                       /* 无内边距 */
+}
+
+/* 编辑按钮悬停效果 */
+.edit-btn:hover {
+    opacity: 1;                       /* 不透明 */
+}
+
+/* 名称编辑输入框样式 */
+.name-edit-input {
+    background: none;                 /* 无背景 */
+    border: none;                     /* 无边框 */
+    border-bottom: 1px solid var(--primary-color);  /* 底部边框 */
+    color: var(--text-color);         /* 文字颜色 */
+    font-size: 14px;                  /* 字体大小 */
+    padding: 5px;                     /* 内边距 */
+    outline: none;                    /* 无轮廓 */
+    width: 150px;                     /* ��度 */
+}
+
+/* 状态点样式 */
+.status-dot {
+    display: inline-block;            /* 内联块级显示 */
+    width: 8px;                       /* 宽度 */
+    height: 8px;                      /* 高度 */
+    background-color: #4CAF50;        /* 背景色 */
+    border-radius: 50%;               /* 圆形 */
+    margin-right: 5px;                /* 右边距 */
+}
+
+/* IP地址显示框样式 */
+.ip-display {
+    margin-top: auto;                 /* 上边距自动 */
+    background-color: rgba(255, 255, 255, 0.05);  /* 半透明背景 */
+    padding: 10px;                    /* 内边距 */
+    border-radius: 8px;               /* 圆角 */
+    font-size: 14px;                  /* 字体大小 */
+    display: flex;                    /* 弹性布局 */
+    justify-content: space-between;   /* 两端对齐 */
+    align-items: center;              /* 垂直居中 */
+}
+
+/* 文件拖放区样式 */
+.file-drop-zone {
+    border: 2px dashed var(--border-color);  /* 虚线框 */
+    border-radius: 10px;              /* 圆角 */
+    padding: 40px;                    /* 内边距 */
+    text-align: center;               /* 文字居中 */
+    margin-bottom: 20px;              /* 下边距 */
+    cursor: pointer;                  /* 鼠标指针 */
+    transition: all var(--transition-speed);  /* 过渡动画 */
+}
+
+/* 文��拖放区悬停效果 */
+.file-drop-zone:hover {
+    border-color: var(--primary-color);  /* 边框颜色 */
+    background-color: rgba(0, 191, 165, 0.1);  /* 半透明背景 */
+}
+
+/* 文件拖放区图标样式 */
+.file-drop-zone i {
+    font-size: 40px;                  /* 图标大小 */
+    color: var(--primary-color);      /* 图标颜色 */
+    margin-bottom: 10px;              /* 下边距 */
+}
+
+/* 文件拖放区文字样式 */
+.file-drop-zone p {
+    margin: 0;                        /* 无外边距 */
+    color: #888;                      /* 文字颜色 */
+} 

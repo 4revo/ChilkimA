@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chilki mA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="logo">Chilki mA</div>
+        
+        <!-- 用户信息卡片 -->
+        <div class="user-card" onclick="toggleUserModal()">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-info">
+                <div class="user-name" id="current-user-name">加载中...</div>
+                <div class="user-status">在线</div>
+            </div>
+        </div>
+
+        <!-- 用户详细信息弹窗 -->
+        <div class="user-modal" id="user-modal">
+            <div class="user-modal-content">
+                <div class="user-modal-header">
+                    <h3>用户信息</h3>
+                    <button class="close-button" onclick="toggleUserModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="user-modal-body">
+                    <div class="user-modal-avatar" onclick="document.getElementById('avatar-input').click()">
+                        <i class="fas fa-user"></i>
+                        <div class="avatar-overlay">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <input type="file" id="avatar-input" accept="image/*" hidden onchange="handleAvatarChange(event)">
+                    </div>
+                    <div class="user-modal-info">
+                        <div class="info-item">
+                            <span class="label">用户名</span>
+                            <div class="editable-value">
+                                <span id="modal-user-name" onclick="startNameEdit(this)">加载中...</span>
+                                <button class="edit-btn" onclick="startNameEdit(document.getElementById('modal-user-name'))">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">状态</span>
+                            <span class="value"><span class="status-dot"></span>在线</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">IP地址</span>
+                            <span class="value" id="modal-ip-address">获取中...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">加入时间</span>
+                            <span class="value" id="modal-join-time">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-items-container">
+            <div class="nav-item active" data-target="chat-content">
+                <i class="fas fa-wifi"></i>
+                <span>语之间</span>
+            </div>
+            <div class="nav-item" data-target="group-content">
+                <i class="fas fa-paper-plane"></i>
+                <span>小组</span>
+            </div>
+            <div class="nav-item" data-target="file-content">
+                <i class="fas fa-folder"></i>
+                <span>文件顺丰</span>
+            </div>
+        </div>
+        <!-- IP地址显示框 -->
+        <div class="ip-display">
+            <span class="label">本机地址</span>
+            <span id="ip-address">获取中...</span>
+        </div>
+    </div>
+
+    <!-- 主要内容区 -->
+    <div class="main-content">
+        <!-- 语之间内容区 -->
+        <div class="content-section page-content active" id="chat-content">
+            <div class="center-content">
+                <div class="device-icon">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <div class="device-name">语之间</div>
+                <div class="message">
+                    <p>聊天功能正在开发中...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 小组内容区 -->
+        <div class="content-section page-content" id="group-content">
+            <div class="center-content">
+                <div class="device-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="device-name">小组管理</div>
+                <div class="group-container">
+                    <div class="group-list">
+                        <!-- 小组列表将在这里动态添加 -->
+                    </div>
+                    <button class="action-button">创建小组</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 文件顺丰内容区 -->
+        <div class="content-section page-content" id="file-content">
+            <div class="center-content">
+                <div class="device-icon">
+                    <i class="fas fa-folder"></i>
+                </div>
+                <div class="device-name">文件传输</div>
+                <div class="file-container">
+                    <div class="file-drop-zone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>拖放文件到此处或点击选择文件</p>
+                        <input type="file" id="file-input" multiple hidden>
+                    </div>
+                    <div class="file-list">
+                        <!-- 文件列表将在这里动态添加 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUserData = null;
+
+        // 页面加载时获取用户数据
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/user_data');
+                const data = await response.json();
+                
+                currentUserData = data.user_info;
+                
+                // 更新用户名显示
+                const userName = currentUserData ? currentUserData.name : generateRandomName();
+                document.getElementById('current-user-name').textContent = userName;
+                document.getElementById('modal-user-name').textContent = userName;
+                
+                // 更新加入时间
+                if (currentUserData && currentUserData.join_time) {
+                    document.getElementById('modal-join-time').textContent = currentUserData.join_time;
+                }
+                
+                // 更新头像
+                if (data.avatar) {
+                    updateAvatar(data.avatar);
+                }
+                
+                // 如果是新用户，保存初始数据
+                if (!currentUserData) {
+                    saveUserData({
+                        name: userName,
+                        join_time: new Date().toLocaleString()
+                    });
+                }
+
+                // 更新IP地址显示
+                document.getElementById('ip-address').textContent = window.location.hostname;
+                document.getElementById('modal-ip-address').textContent = window.location.hostname;
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // 保存用户数据
+        async function saveUserData(data, avatar = null) {
+            try {
+                const saveData = {
+                    name: data.name,
+                    join_time: data.join_time
+                };
+                if (avatar) {
+                    saveData.avatar = avatar;
+                }
+                
+                const response = await fetch('/api/user_data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(saveData)
+                });
+                
+                const result = await response.json();
+                if (result.status === 'success') {
+                    currentUserData = saveData;
+                }
+            } catch (error) {
+                console.error('Error saving user data:', error);
+            }
+        }
+
+        // 更新头像显示
+        function updateAvatar(avatarData) {
+            const avatarElements = document.querySelectorAll('.user-avatar, .user-modal-avatar');
+            avatarElements.forEach(element => {
+                element.style.backgroundImage = `url(${avatarData})`;
+                element.style.backgroundSize = 'cover';
+                element.style.backgroundPosition = 'center';
+                const icon = element.querySelector('i.fa-user');
+                if (icon) {
+                    icon.style.display = 'none';
+                }
+            });
+        }
+
+        // 处理头像更改
+        function handleAvatarChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const avatarData = e.target.result;
+                    updateAvatar(avatarData);
+                    saveUserData(currentUserData, avatarData);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 切换用户信息弹窗
+        function toggleUserModal() {
+            const modal = document.getElementById('user-modal');
+            modal.classList.toggle('active');
+        }
+
+        // 开始编辑用户名
+        function startNameEdit(element) {
+            const currentName = element.textContent;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentName;
+            input.className = 'name-edit-input';
+            
+            input.onblur = function() {
+                finishNameEdit(this);
+            };
+            
+            input.onkeypress = function(e) {
+                if (e.key === 'Enter') {
+                    finishNameEdit(this);
+                }
+            };
+            
+            element.parentNode.replaceChild(input, element);
+            input.focus();
+        }
+
+        // 完成用户名编辑
+        function finishNameEdit(input) {
+            const newName = input.value.trim();
+            if (newName && newName !== currentUserData.name) {
+                const span = document.createElement('span');
+                span.id = 'modal-user-name';
+                span.onclick = function() { startNameEdit(this); };
+                span.textContent = newName;
+                
+                document.getElementById('current-user-name').textContent = newName;
+                
+                saveUserData({
+                    ...currentUserData,
+                    name: newName
+                });
+                
+                input.parentNode.replaceChild(span, input);
+            } else {
+                const span = document.createElement('span');
+                span.id = 'modal-user-name';
+                span.onclick = function() { startNameEdit(this); };
+                span.textContent = currentUserData.name;
+                input.parentNode.replaceChild(span, input);
+            }
+        }
+
+        // 切换导航项
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 移除所有导航项的active类
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                
+                // 为当前点击的导航项添加active类
+                this.classList.add('active');
+                
+                // 隐藏所有内容区
+                document.querySelectorAll('.page-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // 显示对应的内容区
+                const targetId = this.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+        });
+    </script>
+</body>
+</html> 
